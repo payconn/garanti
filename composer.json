@@ -1,0 +1,40 @@
+{
+  "name": "payconn/garanti",
+  "description": "Garanti (GVP) payment processing library for PHP",
+  "keywords": [
+    "payconn",
+    "garanti",
+    "gvp"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Murat SAC",
+      "email": "muratsac@mail.com"
+    }
+  ],
+  "type": "library",
+  "require": {
+    "php": ">=7.1",
+    "guzzlehttp/guzzle": "~6.0",
+    "symfony/http-foundation": "^2.1||^3||^4",
+    "payconn/common": "~1.2.9"
+  },
+  "autoload": {
+    "psr-4": {
+      "Payconn\\Garanti\\": "src/Garanti"
+    },
+    "classmap": [
+      "src/Garanti.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Payconn\\Tests\\Garanti\\": "tests/Garanti"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.3",
+    "phpstan/phpstan": "^0.11.2"
+  }
+}
