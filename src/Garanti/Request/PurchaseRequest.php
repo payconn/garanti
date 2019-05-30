@@ -42,8 +42,8 @@ class PurchaseRequest extends AbstractRequest
         $order->addChild('OrderID', $model->getOrderId());
         $transaction = $body->addChild('Transaction');
         $transaction->addChild('Type', 'sales');
-        $transaction->addChild('InstallmentCnt', $model->getInstallment());
-        $transaction->addChild('Amount', $model->getAmount() * 100);
+        $transaction->addChild('InstallmentCnt', (string) $model->getInstallment());
+        $transaction->addChild('Amount', (string) $model->getAmount() * 100);
         $transaction->addChild('CurrencyCode', $model->getCurrency());
         $transaction->addChild('CardholderPresentCode', '0');
         $transaction->addChild('MotoInd', 'N');

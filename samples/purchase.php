@@ -23,4 +23,5 @@ print_r([
     'isSuccessful' => (int) $response->isSuccessful(),
     'message' => $response->getResponseMessage(),
     'code' => $response->getResponseCode(),
+    'orderId' => $response->getOrderId(),
 ]);

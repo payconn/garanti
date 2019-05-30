@@ -14,7 +14,7 @@ class PurchaseResponse extends AbstractResponse
     public function getResponseMessage(): string
     {
         if ($this->isSuccessful()) {
-            return strval($this->getParameters()->get('Transaction')->Response->Message).':'.strval($this->getParameters()->get('Transaction')->RetrefNum);
+            return strval($this->getParameters()->get('Transaction')->Response->Message);
         }
 
         return strval($this->getParameters()->get('Transaction')->Response->ErrorMsg).':'.strval($this->getParameters()->get('Transaction')->Response->SysErrMsg);
@@ -38,5 +38,10 @@ class PurchaseResponse extends AbstractResponse
     public function getRedirectForm(): string
     {
         return '';
+    }
+
+    public function getOrderId(): string
+    {
+        return strval($this->getParameters()->get('Transaction')->RetrefNum);
     }
 }
