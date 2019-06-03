@@ -10,6 +10,7 @@ use Payconn\Common\Model\CompleteInterface;
 use Payconn\Common\Model\PurchaseInterface;
 use Payconn\Common\Model\RefundInterface;
 use Payconn\Common\ResponseInterface;
+use Payconn\Garanti\Request\AuthorizeRequest;
 use Payconn\Garanti\Request\CancelRequest;
 use Payconn\Garanti\Request\PurchaseRequest;
 use Payconn\Garanti\Request\RefundRequest;
@@ -40,6 +41,7 @@ class Garanti extends AbstractGateway
 
     public function authorize(AuthorizeInterface $authorize): ResponseInterface
     {
+        return $this->createRequest(AuthorizeRequest::class, $authorize);
     }
 
     public function complete(CompleteInterface $complete): ResponseInterface

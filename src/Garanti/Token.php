@@ -14,12 +14,15 @@ class Token implements TokenInterface
 
     private $password;
 
-    public function __construct(string $terminalId, string $merchantId, string $userId, string $password)
+    private $storeKey;
+
+    public function __construct(string $terminalId, string $merchantId, string $userId, string $password, string $storeKey = null)
     {
         $this->terminalId = $terminalId;
         $this->merchantId = $merchantId;
         $this->userId = $userId;
         $this->password = $password;
+        $this->storeKey = $storeKey;
     }
 
     public function getTerminalId(): string
@@ -40,5 +43,10 @@ class Token implements TokenInterface
     public function getPassword(): string
     {
         return $this->password;
+    }
+
+    public function getStoreKey(): ?string
+    {
+        return $this->storeKey;
     }
 }
