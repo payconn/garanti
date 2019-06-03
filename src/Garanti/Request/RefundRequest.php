@@ -16,14 +16,14 @@ class RefundRequest extends AbstractRequest
         /** @var Purchase $model */
         $model = $this->getModel();
         /** @var Token $token */
-        $token = $model->getToken();
+        $token = $this->getToken();
 
         // hash
         $securityData = mb_strtoupper(sha1($token->getPassword().'0'.$token->getTerminalId()));
         $hashData = mb_strtoupper(sha1($model->getOrderId().$token->getTerminalId().($model->getAmount() * 100).$securityData));
 
         $body = new \SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-9"?><GVPSRequest></GVPSRequest>');
-        $body->addChild('Mode', $model->getMode());
+        $body->addChild('Mode', $model->isTestMode() ? 'TEST' : 'PROD');
         $body->addChild('Version', 'v0.01');
         $terminal = $body->addChild('Terminal');
         $terminal->addChild('ProvUserID', 'PROVRFN');
@@ -34,10 +34,9 @@ class RefundRequest extends AbstractRequest
         $customer = $body->addChild('Customer');
         $customer->addChild('IPAddress', '127.0.0.1');
         $customer->addChild('EmailAddress');
-        $order = $body->addChild('Order');
-        $order->addChild('OrderID', $model->getOrderId());
         $transaction = $body->addChild('Transaction');
-        $transaction->addChild('Type', $model->getAmount() ? 'refund' : 'void');
+        $transaction->addChild('Type', 'refund');
+        $transaction->addChild('OriginalRetrefNum', $model->getOrderId());
         $transaction->addChild('InstallmentCnt');
         $transaction->addChild('Amount', (string) ($model->getAmount() * 100));
         $transaction->addChild('CurrencyCode', $model->getCurrency());

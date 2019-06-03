@@ -3,51 +3,46 @@
 namespace Payconn;
 
 use Payconn\Common\AbstractGateway;
-use Payconn\Common\ModelInterface;
+use Payconn\Common\BaseUrl;
+use Payconn\Common\Model\AuthorizeInterface;
+use Payconn\Common\Model\CancelInterface;
+use Payconn\Common\Model\CompleteInterface;
+use Payconn\Common\Model\PurchaseInterface;
+use Payconn\Common\Model\RefundInterface;
 use Payconn\Common\ResponseInterface;
-use Payconn\Garanti\Model\Purchase;
-use Payconn\Garanti\Model\Refund;
+use Payconn\Garanti\Request\CancelRequest;
 use Payconn\Garanti\Request\PurchaseRequest;
 use Payconn\Garanti\Request\RefundRequest;
 
 class Garanti extends AbstractGateway
 {
-    public function authorize(ModelInterface $model): ResponseInterface
+    public function initialize(): void
+    {
+        $this->setBaseUrl((new BaseUrl())
+            ->setProdUrls('https://sanalposprov.garanti.com.tr/VPServlet', '')
+            ->setTestUrls('https://sanalposprovtest.garanti.com.tr/VPServlet', 'https://sanalposprovtest.garanti.com.tr/servlet/gt3dengine'));
+    }
+
+    public function purchase(PurchaseInterface $purchase): ResponseInterface
+    {
+        return $this->createRequest(PurchaseRequest::class, $purchase);
+    }
+
+    public function refund(RefundInterface $refund): ResponseInterface
+    {
+        return $this->createRequest(RefundRequest::class, $refund);
+    }
+
+    public function cancel(CancelInterface $cancel): ResponseInterface
+    {
+        return $this->createRequest(CancelRequest::class, $cancel);
+    }
+
+    public function authorize(AuthorizeInterface $authorize): ResponseInterface
     {
     }
 
-    public function purchase(ModelInterface $model): ResponseInterface
+    public function complete(CompleteInterface $complete): ResponseInterface
     {
-        $this->overrideBaseUrl($model);
-
-        return ($this->createRequest(PurchaseRequest::class, $model))->send();
-    }
-
-    public function purchaseComplete(ModelInterface $model): ResponseInterface
-    {
-    }
-
-    public function refund(ModelInterface $model): ResponseInterface
-    {
-        $this->overrideBaseUrl($model);
-
-        return ($this->createRequest(RefundRequest::class, $model))->send();
-    }
-
-    public function authorizeComplete(ModelInterface $model): ResponseInterface
-    {
-        // TODO: Implement authorizeComplete() method.
-    }
-
-    public function overrideBaseUrl(ModelInterface $model): void
-    {
-        if ($model instanceof Purchase
-        || $model instanceof Refund) {
-            if ($model->isTestMode()) {
-                $model->setBaseUrl('https://sanalposprovtest.garanti.com.tr/VPServlet');
-            } else {
-                $model->setBaseUrl('https://sanalposprov.garanti.com.tr/VPServlet');
-            }
-        }
     }
 }
