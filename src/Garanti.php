@@ -21,7 +21,7 @@ class Garanti extends AbstractGateway
     public function initialize(): void
     {
         $this->setBaseUrl((new BaseUrl())
-            ->setProdUrls('https://sanalposprov.garanti.com.tr/VPServlet', '')
+            ->setProdUrls('https://sanalposprov.garanti.com.tr/VPServlet', 'https://sanalposprov.garanti.com.tr/servlet/gt3dengine')
             ->setTestUrls('https://sanalposprovtest.garanti.com.tr/VPServlet', 'https://sanalposprovtest.garanti.com.tr/servlet/gt3dengine'));
     }
 
