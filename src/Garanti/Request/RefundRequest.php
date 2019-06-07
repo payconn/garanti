@@ -5,7 +5,7 @@ namespace Payconn\Garanti\Request;
 use Payconn\Common\AbstractRequest;
 use Payconn\Common\HttpClient;
 use Payconn\Common\ResponseInterface;
-use Payconn\Garanti\Model\Purchase;
+use Payconn\Garanti\Model\Refund;
 use Payconn\Garanti\Response\RefundResponse;
 use Payconn\Garanti\Token;
 
@@ -13,7 +13,7 @@ class RefundRequest extends AbstractRequest
 {
     public function send(): ResponseInterface
     {
-        /** @var Purchase $model */
+        /** @var Refund $model */
         $model = $this->getModel();
         /** @var Token $token */
         $token = $this->getToken();
@@ -34,12 +34,14 @@ class RefundRequest extends AbstractRequest
         $customer = $body->addChild('Customer');
         $customer->addChild('IPAddress', '127.0.0.1');
         $customer->addChild('EmailAddress');
+        $order = $body->addChild('Order');
+        $order->addChild('OrderID', $model->getOrderId());
         $transaction = $body->addChild('Transaction');
         $transaction->addChild('Type', 'refund');
-        $transaction->addChild('OriginalRetrefNum', $model->getOrderId());
+        $transaction->addChild('OriginalRetrefNum', $model->getReturnedOrderId());
         $transaction->addChild('InstallmentCnt');
         $transaction->addChild('Amount', (string) ($model->getAmount() * 100));
-        $transaction->addChild('CurrencyCode', $model->getCurrency());
+        $transaction->addChild('CurrencyCode');
         $transaction->addChild('CardholderPresentCode', '0');
         $transaction->addChild('MotoInd', 'N');
 

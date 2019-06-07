@@ -5,7 +5,7 @@ namespace Payconn\Garanti\Request;
 use Payconn\Common\AbstractRequest;
 use Payconn\Common\HttpClient;
 use Payconn\Common\ResponseInterface;
-use Payconn\Garanti\Model\Purchase;
+use Payconn\Garanti\Model\Cancel;
 use Payconn\Garanti\Response\CancelResponse;
 use Payconn\Garanti\Token;
 
@@ -13,7 +13,7 @@ class CancelRequest extends AbstractRequest
 {
     public function send(): ResponseInterface
     {
-        /** @var Purchase $model */
+        /** @var Cancel $model */
         $model = $this->getModel();
         /** @var Token $token */
         $token = $this->getToken();
@@ -34,12 +34,14 @@ class CancelRequest extends AbstractRequest
         $customer = $body->addChild('Customer');
         $customer->addChild('IPAddress', '127.0.0.1');
         $customer->addChild('EmailAddress');
+        $order = $body->addChild('Order');
+        $order->addChild('OrderID', $model->getOrderId());
         $transaction = $body->addChild('Transaction');
-        $transaction->addChild('OriginalRetrefNum', '915305668794');
+        $transaction->addChild('OriginalRetrefNum', $model->getReturnedOrderId());
         $transaction->addChild('Type', 'void');
         $transaction->addChild('Amount', (string) ($model->getAmount() * 100));
         $transaction->addChild('InstallmentCnt');
-        $transaction->addChild('CurrencyCode', $model->getCurrency());
+        $transaction->addChild('CurrencyCode');
         $transaction->addChild('CardholderPresentCode', '0');
         $transaction->addChild('MotoInd', 'N');
 

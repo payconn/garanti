@@ -9,7 +9,7 @@ use Payconn\Garanti\Model\Purchase;
 use Payconn\Garanti\Token;
 
 $token = new Token('30691297', '7000679', 'PROVAUT', '123qweASD/');
-$creditCard = new CreditCard('4282209027132016', '20', '05', '165');
+$creditCard = new CreditCard('4824894728063019', '23', '07', '172');
 $purchase = new Purchase();
 $purchase->setTestMode(true);
 $purchase->setCreditCard($creditCard);
@@ -22,6 +22,6 @@ print_r([
     'isSuccessful' => (int) $response->isSuccessful(),
     'message' => $response->getResponseMessage(),
     'code' => $response->getResponseCode(),
-    'orderId' => $response->getOrderId(),
-    'body' => $response->getResponseBody(),
+    'orderId' => $purchase->getOrderId(),
+    'returnedOrderId' => $response->getOrderId(),
 ]);
