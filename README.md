@@ -23,7 +23,25 @@ processing library for PHP. This package implements common classes required by P
 
 ## Basic Usage
 ```php
+use Payconn\Common\CreditCard;
+use Payconn\Garanti;
+use Payconn\Garanti\Currency;
+use Payconn\Garanti\Model\Purchase;
+use Payconn\Garanti\Token;
 
+$token = new Token('30691297', '7000679', '123qweASD/');
+$creditCard = new CreditCard('4824894728063019', '23', '07', '172');
+$purchase = new Purchase();
+$purchase->setTestMode(true);
+$purchase->setCreditCard($creditCard);
+$purchase->setCurrency(Currency::TRY);
+$purchase->setAmount(100);
+$purchase->setInstallment(1);
+$purchase->setOrderId('ORDER_12345');
+$response = (new Garanti($token))->purchase($purchase);
+if($response->isSuccessful()){
+    // success!
+}
 ```
 
 ## Change log
