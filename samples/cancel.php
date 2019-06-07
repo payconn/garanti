@@ -7,7 +7,7 @@ use Payconn\Garanti\Currency;
 use Payconn\Garanti\Model\Cancel;
 use Payconn\Garanti\Token;
 
-$token = new Token('30691297', '7000679', 'PROVAUT', '123qweASD/');
+$token = new Token('30691297', '7000679', 'PROVRFN', '123qweASD/');
 $cancel = new Cancel();
 $cancel->setTestMode(true);
 $cancel->setAmount(100);

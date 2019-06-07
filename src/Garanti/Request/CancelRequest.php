@@ -6,7 +6,7 @@ use Payconn\Common\AbstractRequest;
 use Payconn\Common\HttpClient;
 use Payconn\Common\ResponseInterface;
 use Payconn\Garanti\Model\Purchase;
-use Payconn\Garanti\Response\RefundResponse;
+use Payconn\Garanti\Response\CancelResponse;
 use Payconn\Garanti\Token;
 
 class CancelRequest extends AbstractRequest
@@ -49,6 +49,6 @@ class CancelRequest extends AbstractRequest
             'body' => $body->asXML(),
         ]);
 
-        return new RefundResponse($model, (array) @simplexml_load_string($response->getBody()->getContents()));
+        return new CancelResponse($model, (array) @simplexml_load_string($response->getBody()->getContents()));
     }
 }

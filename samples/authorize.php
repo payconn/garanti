@@ -17,8 +17,8 @@ $authorize->setCurrency(Currency::TRY);
 $authorize->setAmount(100);
 $authorize->setInstallment(1);
 $authorize->setOrderId('GVP'.time());
-$authorize->setSuccessfulUrl('http://127.0.0.1:8000/successful');
-$authorize->setFailureUrl('http://127.0.0.1:8000/failure');
+$authorize->setSuccessfulUrl('https://webhook.site/d123fc90-9aa6-42b5-b83c-846ecf739edc');
+$authorize->setFailureUrl('https://webhook.site/d123fc90-9aa6-42b5-b83c-846ecf739edc');
 $response = (new Garanti($token))->authorize($authorize);
 if ($response->isRedirection()) {
     echo $response->getRedirectForm();
