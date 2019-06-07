@@ -17,8 +17,9 @@ processing library for PHP. This package implements common classes required by P
 ## Supported methods
 * purchase
 * authorize
-* purchaseComplete
+* complete
 * refund
+* cancel
 
 ## Basic Usage
 ```php
