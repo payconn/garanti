@@ -16,6 +16,7 @@ class PurchaseRequest extends GarantiRequest
         $token = $this->getToken();
         /** @var Purchase $model */
         $model = $this->getModel();
+        $amount = strval($model->getAmount() * 100);
 
         $body = new \SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-9"?><GVPSRequest></GVPSRequest>');
         $body->addChild('Mode', $this->getMode());
@@ -30,7 +31,7 @@ class PurchaseRequest extends GarantiRequest
             $model->getOrderId().
             $token->getTerminalId().
             $model->getCreditCard()->getNumber().
-            $this->getAmount().
+            $amount.
             mb_strtoupper(sha1(
                 $token->getPassword().
                 '0'.$token->getTerminalId()
@@ -52,7 +53,7 @@ class PurchaseRequest extends GarantiRequest
         $transaction = $body->addChild('Transaction');
         $transaction->addChild('Type', $model->getType());
         $transaction->addChild('InstallmentCnt', (string) $model->getInstallment());
-        $transaction->addChild('Amount', (string) $this->getAmount());
+        $transaction->addChild('Amount', $amount);
         $transaction->addChild('CurrencyCode', $model->getCurrency());
         $transaction->addChild('CardholderPresentCode', '0');
         $transaction->addChild('MotoInd', 'N');

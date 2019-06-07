@@ -16,6 +16,7 @@ class AuthorizeRequest extends GarantiRequest
         $model = $this->getModel();
         /** @var Token $token */
         $token = $this->getToken();
+        $amount = strval($model->getAmount() * 100);
 
         /** @var HttpClient $httpClient */
         $httpClient = $this->getHttpClient();
@@ -33,7 +34,7 @@ class AuthorizeRequest extends GarantiRequest
                 'terminalid' => $token->getTerminalId(),
                 'terminaluserid' => $model->getUserId(),
                 'terminalmerchantid' => $token->getMerchantId(),
-                'txnamount' => $this->getAmount(),
+                'txnamount' => $amount,
                 'txncurrencycode' => $model->getCurrency(),
                 'txninstallmentcount' => $model->getInstallment(),
                 'orderid' => $model->getOrderId(),
@@ -44,7 +45,7 @@ class AuthorizeRequest extends GarantiRequest
                 'secure3dhash' => mb_strtoupper(sha1(
                     $token->getTerminalId().
                     $model->getOrderId().
-                    $this->getAmount().
+                    $amount.
                     $model->getSuccessfulUrl().
                     $model->getFailureUrl().
                     $model->getType().

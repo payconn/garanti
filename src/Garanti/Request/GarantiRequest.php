@@ -11,12 +11,7 @@ abstract class GarantiRequest extends AbstractRequest
         return $this->getModel()->isTestMode() ? 'TEST' : 'PROD';
     }
 
-    public function getAmount(): float
-    {
-        return $this->getModel()->getAmount() * 100;
-    }
-
-    public function getIpAddress(): ?string
+    public function getIpAddress(): string
     {
         $ipAddress = parent::getIpAddress();
         if (!$ipAddress) {

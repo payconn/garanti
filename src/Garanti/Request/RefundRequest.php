@@ -16,6 +16,7 @@ class RefundRequest extends GarantiRequest
         $model = $this->getModel();
         /** @var Token $token */
         $token = $this->getToken();
+        $amount = strval($model->getAmount() * 100);
 
         $body = new \SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-9"?><GVPSRequest></GVPSRequest>');
         $body->addChild('Mode', $this->getMode());
@@ -29,7 +30,7 @@ class RefundRequest extends GarantiRequest
         $terminal->addChild('HashData', mb_strtoupper(sha1(
             $model->getOrderId().
             $token->getTerminalId().
-            $this->getAmount().
+            $amount.
             mb_strtoupper(sha1(
                 $token->getPassword().
                 '0'.$token->getTerminalId()
@@ -47,7 +48,7 @@ class RefundRequest extends GarantiRequest
         $transaction->addChild('Type', $model->getType());
         $transaction->addChild('OriginalRetrefNum', $model->getReturnedOrderId());
         $transaction->addChild('InstallmentCnt');
-        $transaction->addChild('Amount', (string) $this->getAmount());
+        $transaction->addChild('Amount', $amount);
         $transaction->addChild('CurrencyCode');
         $transaction->addChild('CardholderPresentCode', '0');
         $transaction->addChild('MotoInd', 'N');
