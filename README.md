@@ -53,7 +53,7 @@ Please see [UPGRADE](UPGRADE.md) for more information on how to upgrade to the l
 If you are having general issues with Payconn, we suggest posting on
 [Stack Overflow](http://stackoverflow.com/). Be sure to add the
 
-If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/payconn/nestpay/issues),
+If you believe you have found a bug, please report it using the [GitHub issue tracker](https://github.com/payconn/garanti/issues),
 or better yet, fork the library and submit a pull request.
 
 
