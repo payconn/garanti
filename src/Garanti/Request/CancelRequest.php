@@ -4,45 +4,48 @@ namespace Payconn\Garanti\Request;
 
 use Payconn\Common\HttpClient;
 use Payconn\Common\ResponseInterface;
+use Payconn\Garanti\Model\Cancel;
 use Payconn\Garanti\Response\CancelResponse;
+use Payconn\Garanti\Token;
 
 class CancelRequest extends GarantiRequest
 {
     public function send(): ResponseInterface
     {
-        $securityData = mb_strtoupper(sha1(
-            $this->getToken()->getPassword().
-            '0'.$this->getToken()->getTerminalId()
-        ));
-
-        $hashData = mb_strtoupper(sha1(
-            $this->getModel()->getOrderId().
-            $this->getToken()->getTerminalId().
-            $this->getAmount().
-            $securityData
-        ));
+        /** @var Cancel $model */
+        $model = $this->getModel();
+        /** @var Token $token */
+        $token = $this->getToken();
 
         $body = new \SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-9"?><GVPSRequest></GVPSRequest>');
         $body->addChild('Mode', $this->getMode());
         $body->addChild('Version', 'v0.01');
 
         $terminal = $body->addChild('Terminal');
-        $terminal->addChild('ProvUserID', $this->getModel()->getUserId());
-        $terminal->addChild('HashData', $hashData);
-        $terminal->addChild('UserID', $this->getModel()->getUserId());
-        $terminal->addChild('ID', $this->getToken()->getTerminalId());
-        $terminal->addChild('MerchantID', $this->getToken()->getMerchantId());
+        $terminal->addChild('ProvUserID', $model->getUserId());
+        $terminal->addChild('UserID', $model->getUserId());
+        $terminal->addChild('ID', $token->getTerminalId());
+        $terminal->addChild('MerchantID', $token->getMerchantId());
+        $terminal->addChild('HashData', mb_strtoupper(sha1(
+            $model->getOrderId().
+            $token->getTerminalId().
+            $this->getAmount().
+            mb_strtoupper(sha1(
+                $token->getPassword().
+                '0'.$token->getTerminalId()
+            ))
+        )));
 
         $customer = $body->addChild('Customer');
         $customer->addChild('IPAddress', $this->getIpAddress());
         $customer->addChild('EmailAddress');
 
         $order = $body->addChild('Order');
-        $order->addChild('OrderID', $this->getModel()->getOrderId());
+        $order->addChild('OrderID', $model->getOrderId());
 
         $transaction = $body->addChild('Transaction');
-        $transaction->addChild('OriginalRetrefNum', $this->getModel()->getReturnedOrderId());
-        $transaction->addChild('Type', $this->getModel()->getType());
+        $transaction->addChild('OriginalRetrefNum', $model->getReturnedOrderId());
+        $transaction->addChild('Type', $model->getType());
         $transaction->addChild('Amount', (string) $this->getAmount());
         $transaction->addChild('InstallmentCnt');
         $transaction->addChild('CurrencyCode');
@@ -51,7 +54,7 @@ class CancelRequest extends GarantiRequest
 
         /** @var HttpClient $httpClient */
         $httpClient = $this->getHttpClient();
-        $response = $httpClient->request('POST', $this->getModel()->getBaseUrl(), [
+        $response = $httpClient->request('POST', $model->getBaseUrl(), [
             'body' => $body->asXML(),
         ]);
 
