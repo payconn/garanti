@@ -17,4 +17,18 @@ class Purchase extends AbstractModel implements PurchaseInterface
     use Currency;
     use Installment;
     use OrderId;
+
+    protected $userId = 'PROVAUT';
+
+    protected $type = 'sales';
+
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
 }

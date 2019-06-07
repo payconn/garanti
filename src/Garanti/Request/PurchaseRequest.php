@@ -2,58 +2,63 @@
 
 namespace Payconn\Garanti\Request;
 
-use Payconn\Common\AbstractRequest;
 use Payconn\Common\HttpClient;
 use Payconn\Common\ResponseInterface;
-use Payconn\Garanti\Model\Purchase;
 use Payconn\Garanti\Response\PurchaseResponse;
-use Payconn\Garanti\Token;
 
-class PurchaseRequest extends AbstractRequest
+class PurchaseRequest extends GarantiRequest
 {
     public function send(): ResponseInterface
     {
-        /** @var Purchase $model */
-        $model = $this->getModel();
-        /** @var Token $token */
-        $token = $this->getToken();
-
-        // hash
-        $securityData = mb_strtoupper(sha1($token->getPassword().'0'.$token->getTerminalId()));
-        $hashData = mb_strtoupper(sha1($model->getOrderId().$token->getTerminalId().$model->getCreditCard()->getNumber().($model->getAmount() * 100).$securityData));
+        $securityData = mb_strtoupper(sha1(
+            $this->getToken()->getPassword().
+            '0'.$this->getToken()->getTerminalId()
+        ));
+        $hashData = mb_strtoupper(sha1(
+            $this->getModel()->getOrderId().
+            $this->getToken()->getTerminalId().
+            $this->getModel()->getCreditCard()->getNumber().
+            $this->getAmount().
+            $securityData
+        ));
 
         $body = new \SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-9"?><GVPSRequest></GVPSRequest>');
-        $body->addChild('Mode', $model->isTestMode() ? 'TEST' : 'PROD');
+        $body->addChild('Mode', $this->getMode());
         $body->addChild('Version', 'v0.01');
+
         $terminal = $body->addChild('Terminal');
-        $terminal->addChild('ProvUserID', 'PROVAUT');
+        $terminal->addChild('ProvUserID', $this->getModel()->getUserId());
         $terminal->addChild('HashData', $hashData);
-        $terminal->addChild('UserID', $token->getUserId());
-        $terminal->addChild('ID', $token->getTerminalId());
-        $terminal->addChild('MerchantID', $token->getMerchantId());
+        $terminal->addChild('UserID', $this->getModel()->getUserId());
+        $terminal->addChild('ID', $this->getToken()->getTerminalId());
+        $terminal->addChild('MerchantID', $this->getToken()->getMerchantId());
+
         $customer = $body->addChild('Customer');
-        $customer->addChild('IPAddress', '127.0.0.1');
+        $customer->addChild('IPAddress', $this->getIpAddress());
         $customer->addChild('EmailAddress');
+
         $card = $body->addChild('Card');
-        $card->addChild('Number', $model->getCreditCard()->getNumber());
-        $card->addChild('ExpireDate', $model->getCreditCard()->getExpireMonth().$model->getCreditCard()->getExpireYear());
-        $card->addChild('CVV2', $model->getCreditCard()->getCvv());
+        $card->addChild('Number', $this->getModel()->getCreditCard()->getNumber());
+        $card->addChild('ExpireDate', $this->getModel()->getCreditCard()->getExpireMonth().$this->getModel()->getCreditCard()->getExpireYear());
+        $card->addChild('CVV2', $this->getModel()->getCreditCard()->getCvv());
+
         $order = $body->addChild('Order');
-        $order->addChild('OrderID', $model->getOrderId());
+        $order->addChild('OrderID', $this->getModel()->getOrderId());
+
         $transaction = $body->addChild('Transaction');
-        $transaction->addChild('Type', 'sales');
-        $transaction->addChild('InstallmentCnt', (string) $model->getInstallment());
-        $transaction->addChild('Amount', (string) ($model->getAmount() * 100));
-        $transaction->addChild('CurrencyCode', $model->getCurrency());
+        $transaction->addChild('Type', $this->getModel()->getType());
+        $transaction->addChild('InstallmentCnt', (string) $this->getModel()->getInstallment());
+        $transaction->addChild('Amount', (string) $this->getAmount());
+        $transaction->addChild('CurrencyCode', $this->getModel()->getCurrency());
         $transaction->addChild('CardholderPresentCode', '0');
         $transaction->addChild('MotoInd', 'N');
 
         /** @var HttpClient $httpClient */
         $httpClient = $this->getHttpClient();
-        $response = $httpClient->request('POST', $model->getBaseUrl(), [
+        $response = $httpClient->request('POST', $this->getModel()->getBaseUrl(), [
             'body' => $body->asXML(),
         ]);
 
-        return new PurchaseResponse($model, (array) @simplexml_load_string($response->getBody()->getContents()));
+        return new PurchaseResponse($this->getModel(), (array) @simplexml_load_string($response->getBody()->getContents()));
     }
 }

@@ -7,7 +7,7 @@ use Payconn\Garanti\Model\Complete;
 use Payconn\Garanti\Response\CompleteResponse;
 use Payconn\Garanti\Token;
 
-$token = new Token('30691297', '7000679', 'PROVAUT', '123qweASD/');
+$token = new Token('30691297', '7000679', '123qweASD/');
 $complete = new Complete();
 $complete->setTestMode(true);
 $complete->setReturnParams([

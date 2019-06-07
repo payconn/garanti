@@ -10,6 +10,20 @@ class Complete extends AbstractModel implements CompleteInterface
 {
     protected $returnParams;
 
+    protected $userId = 'PROVAUT';
+
+    protected $type = 'sales';
+
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
     public function setReturnParams(array $returnParams)
     {
         $this->returnParams = new ParameterBag($returnParams);

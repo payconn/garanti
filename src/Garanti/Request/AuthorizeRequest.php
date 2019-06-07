@@ -2,55 +2,60 @@
 
 namespace Payconn\Garanti\Request;
 
-use Payconn\Common\AbstractRequest;
 use Payconn\Common\HttpClient;
 use Payconn\Common\ResponseInterface;
-use Payconn\Garanti\Model\Authorize;
 use Payconn\Garanti\Response\AuthorizeResponse;
-use Payconn\Garanti\Token;
 
-class AuthorizeRequest extends AbstractRequest
+class AuthorizeRequest extends GarantiRequest
 {
     public function send(): ResponseInterface
     {
-        /** @var Authorize $model */
-        $model = $this->getModel();
-        /** @var Token $token */
-        $token = $this->getToken();
+        $securityData = mb_strtoupper(sha1(
+            $this->getToken()->getPassword().
+            '0'.$this->getToken()->getTerminalId()
+        ));
 
-        // hash
-        $securityData = mb_strtoupper(sha1($token->getPassword().'0'.$token->getTerminalId()));
-        $hashData = mb_strtoupper(sha1($token->getTerminalId().$model->getOrderId().($model->getAmount() * 100).$model->getSuccessfulUrl().$model->getFailureUrl().'sales'.$model->getInstallment().$token->getStoreKey().$securityData));
+        $hashData = mb_strtoupper(sha1(
+            $this->getToken()->getTerminalId().
+            $this->getModel()->getOrderId().
+            $this->getAmount().
+            $this->getModel()->getSuccessfulUrl().
+            $this->getModel()->getFailureUrl().
+            $this->getModel()->getType().
+            $this->getModel()->getInstallment().
+            $this->getToken()->getStoreKey().
+            $securityData
+        ));
 
         /** @var HttpClient $httpClient */
         $httpClient = $this->getHttpClient();
         $response = $httpClient->request('POST', $this->getModel()->getBaseUrl(), [
             'form_params' => [
                 'secure3dsecuritylevel' => '3d',
-                'cardnumber' => $model->getCreditCard()->getNumber(),
-                'cardexpiredatemonth' => $model->getCreditCard()->getExpireMonth(),
-                'cardexpiredateyear' => $model->getCreditCard()->getExpireYear(),
-                'cardcvv2' => $model->getCreditCard()->getCvv(),
-                'mode' => $model->isTestMode() ? 'TEST' : 'PROD',
                 'apiversion' => 'v0.01',
-                'terminalprovuserid' => 'PROVAUT',
-                'terminalid' => $token->getTerminalId(),
-                'terminaluserid' => $token->getUserId(),
-                'terminalmerchantid' => $token->getMerchantId(),
-                'txntype' => 'sales',
-                'txnamount' => $model->getAmount() * 100,
-                'txncurrencycode' => $model->getCurrency(),
-                'txninstallmentcount' => $model->getInstallment(),
-                'orderid' => $model->getOrderId(),
-                'successurl' => $model->getSuccessfulUrl(),
-                'errorurl' => $model->getFailureUrl(),
+                'terminalprovuserid' => $this->getModel()->getUserId(),
+                'txntype' => $this->getModel()->getType(),
+                'cardnumber' => $this->getModel()->getCreditCard()->getNumber(),
+                'cardexpiredatemonth' => $this->getModel()->getCreditCard()->getExpireMonth(),
+                'cardexpiredateyear' => $this->getModel()->getCreditCard()->getExpireYear(),
+                'cardcvv2' => $this->getModel()->getCreditCard()->getCvv(),
+                'mode' => $this->getMode(),
+                'terminalid' => $this->getToken()->getTerminalId(),
+                'terminaluserid' => $this->getModel()->getUserId(),
+                'terminalmerchantid' => $this->getToken()->getMerchantId(),
+                'txnamount' => $this->getAmount(),
+                'txncurrencycode' => $this->getModel()->getCurrency(),
+                'txninstallmentcount' => $this->getModel()->getInstallment(),
+                'orderid' => $this->getModel()->getOrderId(),
+                'successurl' => $this->getModel()->getSuccessfulUrl(),
+                'errorurl' => $this->getModel()->getFailureUrl(),
                 'customeremailaddress',
                 'customeripaddress' => $this->getIpAddress(),
                 'secure3dhash' => $hashData,
             ],
         ]);
 
-        return new AuthorizeResponse($model, [
+        return new AuthorizeResponse($this->getModel(), [
             'content' => $response->getBody()->getContents(),
         ]);
     }

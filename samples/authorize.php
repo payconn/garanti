@@ -8,7 +8,7 @@ use Payconn\Garanti\Currency;
 use Payconn\Garanti\Model\Authorize;
 use Payconn\Garanti\Token;
 
-$token = new Token('30691297', '7000679', 'PROVAUT', '123qweASD/', '12345678');
+$token = new Token('30691297', '7000679', '123qweASD/', '12345678');
 $creditCard = new CreditCard('4282209004348015', '22', '08', '123');
 $authorize = new Authorize();
 $authorize->setTestMode(true);

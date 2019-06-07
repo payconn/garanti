@@ -19,4 +19,18 @@ class Authorize extends AbstractModel implements AuthorizeInterface
     use Currency;
     use ReturnUrl;
     use OrderId;
+
+    protected $userId = 'PROVAUT';
+
+    protected $type = 'sales';
+
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
 }

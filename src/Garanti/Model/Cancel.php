@@ -12,7 +12,21 @@ class Cancel extends AbstractModel implements CancelInterface
     use OrderId;
     use Amount;
 
-    private $returnedOrderId;
+    protected $returnedOrderId;
+
+    protected $type = 'void';
+
+    protected $userId = 'PROVRFN';
+
+    public function getUserId(): string
+    {
+        return $this->userId;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
     public function getReturnedOrderId(): string
     {
