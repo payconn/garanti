@@ -44,7 +44,7 @@ class PurchaseRequest extends GarantiRequest
 
         $card = $body->addChild('Card');
         $card->addChild('Number', $model->getCreditCard()->getNumber());
-        $card->addChild('ExpireDate', $model->getCreditCard()->getExpireMonth().$model->getCreditCard()->getExpireYear());
+        $card->addChild('ExpireDate', $model->getCreditCard()->getExpireMonth()->format('m').$model->getCreditCard()->getExpireYear()->format('y'));
         $card->addChild('CVV2', $model->getCreditCard()->getCvv());
 
         $order = $body->addChild('Order');
