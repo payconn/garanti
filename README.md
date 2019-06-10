@@ -1,4 +1,4 @@
-# Garanti
+# Payconn: Garanti (Gvp)
 
 **Garanti (GVP) gateway for Payconn payment processing library**
 
