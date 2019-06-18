@@ -16,7 +16,7 @@ $purchase->setCreditCard($creditCard);
 $purchase->setCurrency(Currency::TRY);
 $purchase->setAmount(100);
 $purchase->setInstallment(1);
-$purchase->setOrderId('GVP'.time());
+$purchase->generateOrderId();
 $response = (new Garanti($token))->purchase($purchase);
 print_r([
     'isSuccessful' => (int) $response->isSuccessful(),

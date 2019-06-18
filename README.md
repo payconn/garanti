@@ -9,7 +9,7 @@ processing library for PHP. This package implements common classes required by P
 
 ## Installation
 
-    composer require payconn/garanti:~1.0.2
+    $ composer require payconn/garanti:~1.0.3
 
 ## Supported banks
 * Garanti
@@ -37,7 +37,7 @@ $purchase->setCreditCard($creditCard);
 $purchase->setCurrency(Currency::TRY);
 $purchase->setAmount(100);
 $purchase->setInstallment(1);
-$purchase->setOrderId('ORDER_12345');
+$purchase->generateOrderId();
 $response = (new Garanti($token))->purchase($purchase);
 if($response->isSuccessful()){
     // success!
