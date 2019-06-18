@@ -3,7 +3,10 @@
 namespace Payconn\Garanti\Request;
 
 use Payconn\Common\AbstractRequest;
-use Payconn\Garanti\Model\Complete;
+use Payconn\Garanti\Model\Authorize;
+use Payconn\Garanti\Model\Cancel;
+use Payconn\Garanti\Model\Purchase;
+use Payconn\Garanti\Model\Refund;
 
 abstract class GarantiRequest extends AbstractRequest
 {
@@ -14,7 +17,10 @@ abstract class GarantiRequest extends AbstractRequest
 
     public function getAmount(): ?float
     {
-        if (false === $this->getModel() instanceof Complete) {
+        if ($this->getModel() instanceof Purchase
+        || $this->getModel() instanceof Authorize
+        || $this->getModel() instanceof Refund
+        || $this->getModel() instanceof Cancel) {
             return $this->getModel()->getAmount() * 100;
         }
 
