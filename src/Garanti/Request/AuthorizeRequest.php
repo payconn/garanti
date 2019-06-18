@@ -16,7 +16,6 @@ class AuthorizeRequest extends GarantiRequest
         $model = $this->getModel();
         /** @var Token $token */
         $token = $this->getToken();
-        $amount = strval($model->getAmount() * 100);
 
         /** @var HttpClient $httpClient */
         $httpClient = $this->getHttpClient();
@@ -27,14 +26,14 @@ class AuthorizeRequest extends GarantiRequest
                 'terminalprovuserid' => $model->getUserId(),
                 'txntype' => $model->getType(),
                 'cardnumber' => $model->getCreditCard()->getNumber(),
-                'cardexpiredatemonth' => $model->getCreditCard()->getExpireMonth()->format('m'),
-                'cardexpiredateyear' => $model->getCreditCard()->getExpireYear()->format('y'),
+                'cardexpiredatemonth' => $model->getCreditCard()->getExpireMonth(),
+                'cardexpiredateyear' => $model->getCreditCard()->getExpireYear(),
                 'cardcvv2' => $model->getCreditCard()->getCvv(),
                 'mode' => $this->getMode(),
                 'terminalid' => $token->getTerminalId(),
                 'terminaluserid' => $model->getUserId(),
                 'terminalmerchantid' => $token->getMerchantId(),
-                'txnamount' => $amount,
+                'txnamount' => $this->getAmount(),
                 'txncurrencycode' => $model->getCurrency(),
                 'txninstallmentcount' => $model->getInstallment(),
                 'orderid' => $model->getOrderId(),
@@ -45,7 +44,7 @@ class AuthorizeRequest extends GarantiRequest
                 'secure3dhash' => mb_strtoupper(sha1(
                     $token->getTerminalId().
                     $model->getOrderId().
-                    $amount.
+                    $this->getAmount().
                     $model->getSuccessfulUrl().
                     $model->getFailureUrl().
                     $model->getType().

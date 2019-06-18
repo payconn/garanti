@@ -16,7 +16,6 @@ class CancelRequest extends GarantiRequest
         $model = $this->getModel();
         /** @var Token $token */
         $token = $this->getToken();
-        $amount = strval($model->getAmount() * 100);
 
         $body = new \SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-9"?><GVPSRequest></GVPSRequest>');
         $body->addChild('Mode', $this->getMode());
@@ -30,7 +29,7 @@ class CancelRequest extends GarantiRequest
         $terminal->addChild('HashData', mb_strtoupper(sha1(
             $model->getOrderId().
             $token->getTerminalId().
-            $amount.
+            $this->getAmount().
             mb_strtoupper(sha1(
                 $token->getPassword().
                 '0'.$token->getTerminalId()
@@ -47,7 +46,7 @@ class CancelRequest extends GarantiRequest
         $transaction = $body->addChild('Transaction');
         $transaction->addChild('OriginalRetrefNum', $model->getReturnedOrderId());
         $transaction->addChild('Type', $model->getType());
-        $transaction->addChild('Amount', $amount);
+        $transaction->addChild('Amount', (string) $this->getAmount());
         $transaction->addChild('InstallmentCnt');
         $transaction->addChild('CurrencyCode');
         $transaction->addChild('CardholderPresentCode', '0');

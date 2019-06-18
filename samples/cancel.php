@@ -11,7 +11,7 @@ $cancel = new Cancel();
 $cancel->setTestMode(true);
 $cancel->setAmount(100);
 $cancel->setReturnedOrderId('915805719230');
-$cancel->setOrderId('GVP1559917965');
+$cancel->generateOrderId();
 $response = (new Garanti($token))->cancel($cancel);
 print_r([
     'isSuccessful' => (int) $response->isSuccessful(),
