@@ -17,11 +17,12 @@ abstract class GarantiRequest extends AbstractRequest
 
     public function getAmount(): ?float
     {
-        if ($this->getModel() instanceof Purchase
-        || $this->getModel() instanceof Authorize
-        || $this->getModel() instanceof Refund
-        || $this->getModel() instanceof Cancel) {
-            return $this->getModel()->getAmount() * 100;
+        $model = $this->getModel();
+        if ($model instanceof Purchase
+        || $model instanceof Authorize
+        || $model instanceof Refund
+        || $model instanceof Cancel) {
+            return $model->getAmount() * 100;
         }
 
         return null;
