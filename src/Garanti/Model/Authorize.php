@@ -20,9 +20,9 @@ class Authorize extends AbstractModel implements AuthorizeInterface
     use ReturnUrl;
     use OrderId;
 
-    protected $userId = 'PROVAUT';
+    protected string $userId = 'PROVAUT';
 
-    protected $type = 'sales';
+    protected string $type = 'sales';
 
     public function getUserId(): string
     {

@@ -8,11 +8,11 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class Complete extends AbstractModel implements CompleteInterface
 {
-    protected $returnParams;
+    protected ParameterBag $returnParams;
 
-    protected $userId = 'PROVAUT';
+    protected string $userId = 'PROVAUT';
 
-    protected $type = 'sales';
+    protected string $type = 'sales';
 
     public function getUserId(): string
     {
@@ -24,7 +24,7 @@ class Complete extends AbstractModel implements CompleteInterface
         return $this->type;
     }
 
-    public function setReturnParams(array $returnParams)
+    public function setReturnParams(array $returnParams): void
     {
         $this->returnParams = new ParameterBag($returnParams);
     }

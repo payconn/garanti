@@ -12,11 +12,11 @@ class Refund extends AbstractModel implements RefundInterface
     use Amount;
     use OrderId;
 
-    protected $returnedOrderId;
+    protected string $returnedOrderId;
 
-    protected $userId = 'PROVRFN';
+    protected string $userId = 'PROVRFN';
 
-    protected $type = 'refund';
+    protected string $type = 'refund';
 
     public function getUserId(): string
     {
