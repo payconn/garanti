@@ -18,9 +18,9 @@ class Purchase extends AbstractModel implements PurchaseInterface
     use Installment;
     use OrderId;
 
-    protected string $userId = 'PROVAUT';
+    protected $userId = 'PROVAUT';
 
-    protected string $type = 'sales';
+    protected $type = 'sales';
 
     public function getUserId(): string
     {
