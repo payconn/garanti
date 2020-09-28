@@ -24,7 +24,7 @@ class Complete extends AbstractModel implements CompleteInterface
         return $this->type;
     }
 
-    public function setReturnParams(array $returnParams)
+    public function setReturnParams(array $returnParams): void
     {
         $this->returnParams = new ParameterBag($returnParams);
     }
